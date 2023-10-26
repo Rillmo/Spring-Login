@@ -1,0 +1,22 @@
+
+# SEVER
+server:
+  address: localhost
+  port: 8080
+
+
+# MYSQL
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/test
+    username: root
+    password: rillmo123
+
+# JPA
+  jpa:
+    database: mysql
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+

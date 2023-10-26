@@ -1,18 +1,17 @@
 package rillmo.project.springlogin.model;
 
 
-import com.google.type.Date;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import lombok.*;
 
 @Getter
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
+@Entity
 public class User {
+    @Id
     private String id;
     private String name;
-
-    private Date create_dt;
-    private Date update_dt;
 }
