@@ -1,15 +1,12 @@
 package rillmo.project.springlogin;
 
-import jakarta.persistence.SecondaryTable;
-import org.aspectj.lang.annotation.RequiredTypes;
-import org.assertj.core.api.Assertions;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import rillmo.project.springlogin.dto.UpdateUserDTO;
+import rillmo.project.springlogin.dto.user.UpdateUserDTO;
 import rillmo.project.springlogin.model.User;
 import rillmo.project.springlogin.repository.UserRepository;
 import rillmo.project.springlogin.service.UserService;
@@ -24,6 +21,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserTest {
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private EntityManager em;
 
     private static User user1;
     private static User user2;
@@ -40,7 +41,6 @@ class UserTest {
                 .email("email2")
                 .password("pw2")
                 .build();
-
     }
 
     @Test
@@ -54,12 +54,15 @@ class UserTest {
         // save user
         userService.saveUser(user1);
 
+        em.flush();
+        em.clear();
+
         // success case
         User findUser = userService.findUserById(user1.getId());
         assertThat(user1.getId()).isEqualTo(findUser.getId());
 
         // fail case
-        assertThrows(RuntimeException.class, () -> userService.findUserById(0L));
+        assertThrows(RuntimeException.class, () -> userService.findUserById("asdsafsaf"));
     }
 
     @Test
@@ -67,6 +70,9 @@ class UserTest {
         // save user
         userService.saveUser(user1);
         userService.saveUser(user2);
+
+        em.flush();
+        em.clear();
 
         List<User> users = userService.findAll();
 
@@ -103,4 +109,5 @@ class UserTest {
         // user1 must not find user1
         assertThrows(Exception.class, () -> userService.findUserById(user1.getId()));
     }
+
 }

@@ -1,4 +1,4 @@
-package rillmo.project.springlogin.dto;
+package rillmo.project.springlogin.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.Data;

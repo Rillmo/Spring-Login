@@ -3,8 +3,9 @@ package rillmo.project.springlogin.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import rillmo.project.springlogin.dto.UpdateUserDTO;
+import rillmo.project.springlogin.dto.user.UpdateUserDTO;
 import rillmo.project.springlogin.model.User;
+import rillmo.project.springlogin.repository.AccountRepository;
 import rillmo.project.springlogin.repository.UserRepository;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User findUserById(Long id) {
+    public User findUserById(String id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException());
     }
@@ -29,17 +30,18 @@ public class UserService {
     }
 
     @Transactional
-    public User updateUser(Long id, UpdateUserDTO request) {
+    public User updateUser(String id, UpdateUserDTO request) {
         User findUser = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException());
         User updateUser = findUser.update(request.getName(), request.getEmail(), request.getPassword());
         return updateUser;
     }
 
-    public User deleteUser(Long id) {
+    public User deleteUser(String id) {
         User findUser = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException());
         userRepository.delete(findUser);
         return findUser;
     }
+
 }
