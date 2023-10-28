@@ -3,19 +3,198 @@
     <title>LoginPage</title>
 </head>
 <body>
-    <h1>Login</h1>
+    <!-- SIGNUP FORM -->
+    <h1>SIGNUP</h1>
+    <form id="signupForm">
+        <label for="name-signup">name:</label>
+        <input type="text" id="name-signup" name="name" required><br><br>
+
+        <label for="email-signup">email:</label>
+        <input type="text" id="email-signup" name="email" required><br><br>
+
+        <label for="password-signup">password:</label>
+        <input type="password" id="password-signup" name="password" required><br><br>
+
+        <button type="submit">signup</button>
+    </form>
+    <div id="result">
+        <!-- signup result -->
+    </div>
+
+    <br><br><br>
+
+    <!-- LOGIN FORM -->
+    <h1>LOGIN</h1>
     <form id="loginForm">
-        <label for="email">email:</label>
-        <input type="text" id="email" name="email" required><br><br>
+        <label for="email-login">email:</label>
+        <input type="text" id="email-login" name="email" required><br><br>
 
-        <label for="password">password:</label>
-        <input type="password" id="password" name="password" required><br><br>
+        <label for="password-login">password:</label>
+        <input type="password" id="password-login" name="password" required><br><br>
 
-        <button type="button" id="login-button">login</button>
+        <button type="submit">login</button>
     </form>
 
     <a href="#" class="btn btn-sm btn-success active" role="button">Google Login</a><br>
     <a href="#" class="btn btn-sm btn-success active" role="button">Apple Login</a><br>
     <a href="#" class="btn btn-sm btn-success active" role="button">Facebook Login</a><br>
+
+    <br><br><br>
+    <h1>USER LIST</h1>
+    <button onclick="userList()">search</button><br>
+    <table id="user-list" border="1">
+        <thead>
+            <th>ID</th>
+            <th>NAME</th>
+            <th>EMAIL</th>
+            <th>PASSWORD</th>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <br><br><br>
+    <h1>ADD ACCOUNT</h1>
+    <form id="add-account-form">
+        <label for="userid-add-account">userid:</label>
+        <input type="text" id="userid-add-account" name="name" required><br><br>
+
+        <label for="nickname-add-account">nickname:</label>
+        <input type="text" id="nickname-add-account" name="name" required><br><br>
+
+        <button type="submit">add</button>
+    </form>
+
+    <br><br><br>
+    <h1>ACCOUNT LIST</h1>
+    <form id="account-list-form">
+        <label for="userid-account-list">userid:</label>
+        <input type="text" id="userid-account-list" name="name" required> <br><br>
+        <button type="submit">search</button>
+    </form>
+    <table id="account-list" border="1">
+        <thead>
+        <th>ID</th>
+        <th>USER</th>
+        <th>NICKNAME</th>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <br><br><br>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const name = document.getElementById('name-signup').value;
+            const email = document.getElementById('email-signup').value;
+            const password = document.getElementById('password-signup').value;
+
+            fetch('http://localhost:8080/user/v1/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    password: password
+                }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const resultElement = document.getElementById('result');
+                    resultElement.innerHTML = `<p>SUCCESS</p>`;
+                })
+                .catch(error => {
+                    console.error('ERROR:', error);
+                });
+        });
+
+        function userList () {
+            const url = "http://localhost:8080/user/v1/users/all";
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.querySelector('#user-list tbody');
+                data.forEach(user => {
+                        const row = tableBody.insertRow();
+                        row.insertCell(0).textContent = user.id;
+                        row.insertCell(1).textContent = user.name;
+                        row.insertCell(2).textContent = user.email;
+                        row.insertCell(3).textContent = user.password;
+                    });
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        }
+        window.onload = userList;
+
+        function userList () {
+            const url = "http://localhost:8080/user/v1/users/all";
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.querySelector('#user-list tbody');
+                data.forEach(user => {
+                        const row = tableBody.insertRow();
+                        row.insertCell(0).textContent = user.id;
+                        row.insertCell(1).textContent = user.name;
+                        row.insertCell(2).textContent = user.email;
+                        row.insertCell(3).textContent = user.password;
+                    });
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        }
+        window.onload = userList;
+
+        document.getElementById('add-account-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const userId = document.getElementById('userid-add-account').value;
+            const nickname = document.getElementById('nickname-add-account').value;
+
+            fetch('http://localhost:8080/account/v1/accounts?userId=' + userId, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    nickname: nickname
+                }),
+            })
+        });
+
+        document.getElementById('account-list-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const userId = document.getElementById('userid-account-list').value;
+
+            const url = "http://localhost:8080/account/v1/accounts?userId=" + userId;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.querySelector('#account-list tbody');
+                data.forEach(account => {
+                        const row = tableBody.insertRow();
+                        row.insertCell(0).textContent = account.id;
+                        row.insertCell(1).textContent = account.user.name;
+                        row.insertCell(2).textContent = account.nickname;
+                    });
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        });
+    </script>
+
 </body>
 </html>
